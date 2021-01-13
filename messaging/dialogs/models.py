@@ -58,6 +58,13 @@ class Dialog(UUIDBaseModel):
         else:
             return False
 
+    def make_name(self):
+        names = []
+        for user in self.users.all():
+            names.append(
+                user.user.short_name
+            )
+        return ', '.join(names)
 
 class UserDialog(Model):
     dialog = ForeignKey(to=Dialog, on_delete=CASCADE, related_name='users')

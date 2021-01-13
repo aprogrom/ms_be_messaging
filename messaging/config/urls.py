@@ -17,8 +17,9 @@ from django.urls import path, include
 
 
 urlpatterns = [
-    path('', include('dialogs.urls')),
     path('', include('mscore.urls', namespace='mscore')),
+    path('', include('dialogs.urls')),
+    path('', include('messages.urls')),
     # path('relations/', include('relations.urls', namespace='relations'))
     # path('', include('core.urls', namespace='core')),
     # path('', include('mail.urls', namespace='mail')),

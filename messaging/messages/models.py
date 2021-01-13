@@ -1,17 +1,22 @@
 from django.db.models import Model, CharField, IntegerField, BooleanField, ForeignKey, DateTimeField, TextField
-from django.db.models.deletion import CASCADE
+from django.db.models.deletion import CASCADE, SET_NULL
 from mscore.models.basemodels import UUIDBaseModel
 from relations.models import UserRelationModel
 from dialogs.models import Dialog
 
 
 class Message(UUIDBaseModel):
+    DELETE_INTERVAL = 15
+    CHANGE_INTERVAL = 30
+
     dialog = ForeignKey(to=Dialog, on_delete=CASCADE, related_name='messages')
+    user = ForeignKey(to=UserRelationModel, on_delete=SET_NULL, related_name='messages', null=True)
     text = TextField()
     sent = DateTimeField(auto_now_add=True)
+    is_changed = BooleanField(default=False)
     changed = DateTimeField(auto_now=True)
-    answer = ForeignKey(to='self', on_delete=CASCADE, related_name='answers')
-    forwarded = ForeignKey(to='self', on_delete=CASCADE, related_name='forwardings')
+    answer = ForeignKey(to='self', on_delete=CASCADE, related_name='answers', null=True, blank=True, default=None)
+    forwarded = ForeignKey(to='self', on_delete=CASCADE, related_name='forwardings', null=True, blank=True, default=None)
     requires_answer = BooleanField(default=False)
     is_delete = BooleanField(default=False)
 

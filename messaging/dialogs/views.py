@@ -109,6 +109,8 @@ class DialogViewSet(
                 ))
         # users = [el for el in serializer.validated_data['users'] if el['user'] not in dialog_users]
         instance.users.bulk_create(users)
+        instance.name = instance.make_name()
+        instance.save()
         detail_serializer = DialogDetailSerializer(instance=instance)
         return Response(detail_serializer.data, status=HTTP_200_OK)
         # return self.perform(request, *args, append_data={'dialog': self.get_object()}, create=False, **kwargs)
@@ -124,6 +126,8 @@ class DialogViewSet(
             raise ValidationError({'detail': 'Групповой диалог менее чем на 3 челвоек не имеет смысл, ' +
                                              'если он вам более не актуален, расформируйте его.'})
         dialog_users.delete()
+        instance.name = instance.make_name()
+        instance.save()
         detail_serializer = DialogDetailSerializer(instance=instance)
         return Response(detail_serializer.data, status=HTTP_200_OK)
         # return self.perform(request, *args, append_data={'dialog': self.get_object()}, create=False, **kwargs)
@@ -148,3 +152,11 @@ class DialogViewSet(
         # dialog_users.delete()
         detail_serializer = DialogDetailSerializer(instance=instance)
         return Response(detail_serializer.data, status=HTTP_200_OK)
+
+
+class ByDialogBaseMixin:
+    def get_dialog_pk(self):
+        return self.kwargs['dialog']
+
+    def get_dialog(self):
+        return Dialog.objects.get(id=self.get_dialog_pk())

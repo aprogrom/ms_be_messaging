@@ -113,7 +113,7 @@ class GroupDialogCreateSerializer(ManyWithThroughModifySerializer):
                 names.append(
                     user['user'].short_name
                 )
-            attrs['name'] = ', '.join(names)[0:-2]
+            attrs['name'] = ', '.join(names)
         return attrs
 
     def create(self, validated_data):
